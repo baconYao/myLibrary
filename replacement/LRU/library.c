@@ -3,6 +3,9 @@
 
 #include "library.h"
 
+#define RED_BOLD "\x1b[;31;1m"
+#define RESET "\x1b[0;m"
+
 
 // 新建一個array list
 DnodePtr initialArrayList(int maxBloNum)
@@ -31,7 +34,7 @@ DnodePtr initialArrayList(int maxBloNum)
 */
 void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *firstBlkNm, int *lastBlkNm)
 {
-    printf("\nExecuting LRU..%d\n",bn);
+    // printf("\nExecuting LRU..%d\n",bn);
 
 
     // 第一筆資料，初始化
@@ -49,7 +52,7 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
         /* 搬移到Arr最前面 */
             // 搬移的是最後一個block
             if(bn == *lastBlkNm){
-                printf("最後\n");
+                printf(RED_BOLD"Block number: %d\n",bn);
                 // 將最後block的右鏈結指向第一個block
                 Arr[bn].rLinkPtr = &Arr[*firstBlkNm];
 
@@ -65,8 +68,9 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
                 *firstBlkNm = bn;
             } else if(bn == *firstBlkNm){
                 // do nothing
+                printf(RED_BOLD"Block number: %d\n",bn);
             } else {
-                printf("不是最後\n");
+                printf(RED_BOLD"Block number: %d\n",bn);
                 // 更新victim block的前block的右鏈結及後block的左鏈結
                 Arr[bn].lLinkPtr->rLinkPtr = Arr[bn].rLinkPtr;
                 Arr[bn].rLinkPtr->lLinkPtr = Arr[bn].lLinkPtr;
@@ -81,6 +85,7 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
             }
         } else {
         /*資料不存在*/
+            printf(RESET"Block number: %d\n",bn);
             // buffer cache已滿，需踢除最後的block
             if(delete){
                 Arr[*lastBlkNm].dirty = 0;
@@ -103,10 +108,10 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
         }
 
     }
-
+    printf(RESET);
 }
 
-// // 循序訪問並印出值,L為list的header
+// // 循序訪問並印出值
 void DTraverse(DnodePtr Arr, int firstBlkNm, int maxBloNum)
 {
     printf("Traverse\n");

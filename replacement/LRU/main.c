@@ -89,8 +89,8 @@ int main(int argc, char *argv[])
                 // 讀資料
                 fscanf(rPtr, "%d\n",&srBlockNum);
                 LRU(Arr,i,srBlockNum,preBlock,needDelete,&hitCount,&firstBlkNm,&lastBlkNm);
-                printf("%d\n",hitCount );
-                // c = getchar();
+                // printf("%d\n",hitCount );
+                c = getchar();
                 // DTraverse(Arr,firstBlkNm,maxBlockNumber);
                 preBlock = srBlockNum;
             }
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
         printf("\n\nLRU finish.\n");
         printf("------------------------------\n");
         float hitRatio = (float)hitCount / (float)bloNuCount;
-        printf("Hit ratio: %.3f\n",hitRatio );
+        printf(YEL_BOLD"Hit ratio: %.3f\n",hitRatio );
 
     } else {
         exit(1);
