@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "config.h"
 #include "library.h"
 
@@ -10,21 +7,21 @@ int main(int argc, char *argv[])
 {
     int keepGo;
     if(argc < 2){
-        printf("Sorry!\n");
+        printf(RED_BOLD"Sorry!\n");
         printf("You need input some parameter.\n");
         printf("Example:  ./a.out workload [-d]\n");
         keepGo = 0;
     } else  if(argc == 2){
-        printf("Did not enter -d argument\n");
-        printf("------------------------------\n");
+        printf(CYAN_BOLD_ITALIC"Did not enter -d argument\n");
+        printf("------------------------------\n"RESET);
         keepGo = 1;
     } else if (argc == 3){
-        printf("You have selected a parameter [%s] .\n",argv[2]);
+        printf(CYAN_BOLD_ITALIC"You have selected a parameter [%s] .\n",argv[2]);
         printf("Your workload is %s .\n", argv[1]);
-        printf("------------------------------\n");
+        printf("------------------------------\n"RESET);
         keepGo = 1;
     } else {
-        printf("Sorry!\n");
+        printf(RED_BOLD"Sorry!\n");
         printf("You enter too much parameters\n");
         printf("Example:  ./a.out workload [-d]\n");
         keepGo = 0;
@@ -42,7 +39,7 @@ int main(int argc, char *argv[])
         FILE *rPtr;
         int rBlockNum;
         if((rPtr = fopen(argv[1],"r")) == NULL){
-            printf("First read error!\n");
+            printf(RED_BOLD"First read error!\n"RESET);
             exit(1);
         }
         else {
@@ -72,9 +69,8 @@ int main(int argc, char *argv[])
         int hitCount = 0;    //記錄hit count
         int firstBlkNm; // 記錄最前面的block number
         int lastBlkNm;  // 記錄最後面的block number
-        int c;
         if((rPtr = fopen(argv[1],"r")) == NULL){
-            printf("Second read error!\n");
+            printf(RED_BOLD"Second read error!\n"RESET);
             exit(1);
         }
         else {
@@ -90,8 +86,9 @@ int main(int argc, char *argv[])
                 fscanf(rPtr, "%d\n",&srBlockNum);
                 LRU(Arr,i,srBlockNum,preBlock,needDelete,&hitCount,&firstBlkNm,&lastBlkNm);
                 // printf("%d\n",hitCount );
-                c = getchar();
+                // int c = getchar();
                 // DTraverse(Arr,firstBlkNm,maxBlockNumber);
+
                 preBlock = srBlockNum;
             }
             fclose(rPtr);

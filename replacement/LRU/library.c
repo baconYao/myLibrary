@@ -2,10 +2,9 @@
 #include <stdlib.h>
 
 #include "library.h"
-#include "config.h"
 
-// #define RED_BOLD "\x1b[;31;1m"
-// #define RESET "\x1b[0;m"
+#define RED_BOLD "\x1b[;31;1m"
+#define RESET "\x1b[0;m"
 
 
 // 新建一個array list

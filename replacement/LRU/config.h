@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define RED_BOLD "\x1b[;31;1m"
 #define BLU_BOLD "\x1b[;34;1m"
 #define YEL_BOLD "\x1b[;33;1m"
