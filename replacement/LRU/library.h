@@ -15,6 +15,7 @@ typedef Dnode *DnodePtr;
 DnodePtr initialArrayList(int);
 void LRU(DnodePtr, int, int, int, int, int *, int *, int *);
 void DTraverse(DnodePtr, int, int);
+int DBlockNumberInCache(DnodePtr, int, int);
 // DnodePtr DpreNode(DnodePtr, DnodePtr);
 // int DdeleteNode(DnodePtr, DnodePtr);
 // DnodePtr DcreateAll(int *, int);

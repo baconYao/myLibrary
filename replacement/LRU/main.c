@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         }
         printf("First read finish.\n\n\n");
         printf("------------------------------\n");
-
+        int c = getchar();
 
         /* 第二次讀檔，新增array list並開始執行LRU演算法 */
         // 新增一個array list
@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
         int preBlock = -1;   //紀錄上一個block number
         int needDelete = 0;  //是否執行踢除動作(若buffer cache已滿)
         int hitCount = 0;    //記錄hit count
-        int firstBlkNm; // 記錄最前面的block number
-        int lastBlkNm;  // 記錄最後面的block number
+        int firstBlkNm= -1; // 記錄最前面的block number
+        int lastBlkNm= -1;  // 記錄最後面的block number
         if((rPtr = fopen(argv[1],"r")) == NULL){
             printf(RED_BOLD"Second read error!\n"RESET);
             exit(1);
@@ -76,12 +76,21 @@ int main(int argc, char *argv[])
         else {
             printf("Reading workload......\n");
             int i = 0;
+            int key = 1;
             for(i = 0; i < bloNuCount; i++)
             {
                 // 判斷buffer cache是否已滿
-                if((i+1) * blockSize > bufferSize){
-                    needDelete = 1;
+                if( (i > 0)  &&  key){
+                    // int c = getchar();
+                    // printf("!%d\n",DBlockNumberInCache(Arr,firstBlkNm,maxBlockNumber));
+                    if( (DBlockNumberInCache(Arr,firstBlkNm,maxBlockNumber) == maxBlockCountInCache)) {
+                        printf("Cache is fulled blocks\n");
+                        // int c = getchar();
+                        needDelete = 1;
+                        key = 0;
+                    }
                 }
+                // printf("%d\n",i );
                 // 讀資料
                 fscanf(rPtr, "%d\n",&srBlockNum);
                 LRU(Arr,i,srBlockNum,preBlock,needDelete,&hitCount,&firstBlkNm,&lastBlkNm);

@@ -5,7 +5,7 @@
 
 #define RED_BOLD "\x1b[;31;1m"
 #define RESET "\x1b[0;m"
-
+#define GRN_BOLD "\x1b[;32;1m"
 
 // 新建一個array list
 DnodePtr initialArrayList(int maxBloNum)
@@ -13,7 +13,7 @@ DnodePtr initialArrayList(int maxBloNum)
     DnodePtr newArrList;
     //須強制轉型，也可寫成(node *)
     // malloc要求配置一個node所需的記憶體
-    newArrList = (DnodePtr) malloc(maxBloNum * sizeof(Dnode));
+    newArrList = (DnodePtr) malloc((maxBloNum+1) * sizeof(Dnode));
 
     if(newArrList == NULL){
         printf("Insufficient memory\n");
@@ -34,7 +34,8 @@ DnodePtr initialArrayList(int maxBloNum)
 */
 void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *firstBlkNm, int *lastBlkNm)
 {
-    // printf("\nExecuting LRU..%d\n",bn);
+    // printf("\n\nExecuting LRU..%d\n",bn);
+    // printf("firstBlkNm: %d  , lastBlkNm: %d\n",*firstBlkNm,*lastBlkNm);
 
 
     // 第一筆資料，初始化
@@ -45,9 +46,10 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
         Arr[bn].dirty = 1;
         *firstBlkNm = bn;
         *lastBlkNm = bn;
+        printf("\nFirst Block Number is : %d\n",Arr[bn].blockNum);
     } else {
         /* 此資料已存在 */
-        if(Arr[bn].dirty){
+        if(Arr[bn].blockNum == bn){
             *hitCount+=1;
         /* 搬移到Arr最前面 */
             // 搬移的是最後一個block
@@ -88,6 +90,7 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
             printf(RESET"Block number: %d\n",bn);
             // buffer cache已滿，需踢除最後的block
             if(delete){
+                // printf(GRN_BOLD"Delete\n");
                 Arr[*lastBlkNm].dirty = 0;
                 Arr[*lastBlkNm].blockNum = -1;
                 Arr[*lastBlkNm].rLinkPtr = NULL;
@@ -98,9 +101,9 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
             } 
             // 將新進的block加到最前頭，並將rLinkPtr指向"原"第一個block
             Arr[bn].blockNum = bn;
+            Arr[bn].dirty = 1;
             Arr[bn].lLinkPtr = NULL;    //指向Head(NULL)
             Arr[bn].rLinkPtr = &Arr[pre];
-            Arr[bn].dirty = 1;
             *firstBlkNm = bn;
 
             // 將前一個block的lLinkPtr指向最新進來的Block
@@ -114,7 +117,7 @@ void LRU(DnodePtr Arr, int i, int bn, int pre, int delete, int *hitCount, int *f
 // // 循序訪問並印出值
 void DTraverse(DnodePtr Arr, int firstBlkNm, int maxBloNum)
 {
-    printf("Traverse\n");
+    printf("****************Traverse\n");
     int i = 0;
     int value;
     int tmp = firstBlkNm;
@@ -126,7 +129,6 @@ void DTraverse(DnodePtr Arr, int firstBlkNm, int maxBloNum)
             printf("Head <-> %d <-> ", value);
         } else if(Arr[tmp].rLinkPtr == NULL){
             printf("%d \n",value);
-            printf("----------------------------\n\n");
         } else {
             printf("%d <-> ",value);
         }
@@ -136,5 +138,19 @@ void DTraverse(DnodePtr Arr, int firstBlkNm, int maxBloNum)
             break;
         }
     }    
+    printf("\nTraverse****************\n");
 }
 
+// 計算cache內有多少block number，並回傳數量，用來判斷cache是否已滿
+int DBlockNumberInCache(DnodePtr Arr, int firstBlkNm, int maxBloNum)
+{
+    int i = 0;
+    int tmp = firstBlkNm;
+    while(Arr[tmp].rLinkPtr != NULL){
+        i++;
+        tmp = Arr[tmp].rLinkPtr->blockNum;
+    }
+
+    return i;
+
+}
