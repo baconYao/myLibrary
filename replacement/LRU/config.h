@@ -10,8 +10,10 @@
 #define RESET "\x1b[0;m"
 
 
-// 設置buffer cache的大小，預設為1G
-int bufferSize = 1024 * 1024;
+// 設置buffer cache的大小，預設為1MB
+int bufferSize = 256 * 4;
 
-// 設置block size，預設為256KB
-int blockSize = 256;
+// 設置block size，預設為4KB
+int blockSize = 4;
+
+#define maxBlockCountInCache bufferSize/blockSize
