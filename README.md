@@ -2,7 +2,7 @@
 Some useful codes, such as linklist, LRU replacement...
 
 ## How to use?
-###*Environment set*
+###Environment set
 
 I used **Ubuntu 14.04** operating system to implement.
 
