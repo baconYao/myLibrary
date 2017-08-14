@@ -22,7 +22,7 @@ list *create_list() {
 bool empty_list(list *l) {
   return l -> size == 0;
 }
-
+// 從前面放入
 void push_front_list(list *l, int value) {
   list_node *ln = (list_node *) malloc(sizeof(list_node));
   ln -> value = value;
@@ -31,6 +31,25 @@ void push_front_list(list *l, int value) {
   l -> size++;
 }
 
+// 從後面放入
+void push_back_list(list *l, int value) {
+  list_node *ln = (list_node *) malloc(sizeof(list_node));
+  ln -> value = value;
+  ln -> next = NULL;
+  list_node *p = l -> head;
+  while(p != NULL && p -> next != NULL){
+    p = p -> next;        //指向下一個node的memory address
+  }
+  if( p == NULL) {        //list is empty
+    l -> head = ln;
+  } else {
+    p -> next = ln;       //指向新的node
+  }
+
+  l -> size++;
+}
+
+// 從前面拿出
 int pop_front_list(list *l) {
   if(empty_list(l)) {
     printf("Error, empty list!\n");
@@ -44,13 +63,38 @@ int pop_front_list(list *l) {
   return value;
 }
 
+// 從後面拿出
+int pop_back_list(list *l) {
+  if(empty_list(l)) {
+    printf("Error, empty list!\n");
+    return 0;
+  }
+  if(l -> head -> next == NULL) {       //
+    int value = l -> head -> value;
+    free(l -> head);
+    l -> head = NULL;
+    l -> size--;
+    return value;
+  }
+
+  list_node *ln = l -> head;
+  while(ln -> next -> next != NULL) {
+    ln = ln -> next;
+  }
+  int value = ln -> next -> value;
+  free(ln -> next);
+  ln -> next = 0;       //指向NULL
+  l -> size--;
+  return value;
+}
+
 int main(int argc, char **argv) {
   list *l = create_list();
-  push_front_list(l, 3);
-  push_front_list(l, 62);
-  push_front_list(l, 74);
-  push_front_list(l, 8);
-  push_front_list(l, 1102);
+  push_back_list(l, 3);
+  push_back_list(l, 62);
+  push_back_list(l, 74);
+  push_back_list(l, 8);
+  push_back_list(l, 1102);
   while(!empty_list(l)){
     printf("%d\n", pop_front_list(l));
   }
