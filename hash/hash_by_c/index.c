@@ -1,6 +1,9 @@
 /*
   Simple hash program by C laguage.
   https://www.youtube.com/watch?v=B7CdfZEMDXM
+  furture work:
+    1. 增加insert function
+    2. 解決collision問題
 */
 
 #include <stdio.h>
@@ -20,6 +23,17 @@ void display(hash_table table[], int size) {
   }
 }
 
+void serach(hash_table table[], int size) {
+  int i;
+  printf("Enter the element you want to search: ");
+  scanf("%d", &i);
+  if(table[ i % size ].value == i) {
+    printf("The element exist at %d\n", i % size);
+  } else {
+    printf("The element does not exist.\n");
+  }
+}
+
 int main(int argc, char ** argv) {
   int size, i, tmp;
   printf("Enter the size of the hash table:");
@@ -36,6 +50,7 @@ int main(int argc, char ** argv) {
 
   printf("\n");
   display(hTable, size);
+  serach(hTable, size);
 
   return 0;
 }
