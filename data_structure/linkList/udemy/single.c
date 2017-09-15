@@ -88,6 +88,20 @@ int pop_back_list(list *l) {
   return value;
 }
 
+void reverseList(list *l) {
+  list_node *prev = NULL;
+  list_node *curr = l -> head;
+  while(curr != NULL) {
+    list_node *nextTmp = curr -> next;
+    curr -> next = prev;
+    prev = curr;
+    curr = nextTmp;
+  }
+
+  l -> head = prev;
+}
+
+
 int main(int argc, char **argv) {
   list *l = create_list();
   push_back_list(l, 3);
@@ -95,6 +109,18 @@ int main(int argc, char **argv) {
   push_back_list(l, 74);
   push_back_list(l, 8);
   push_back_list(l, 1102);
+  while(!empty_list(l)){
+    printf("%d\n", pop_front_list(l));
+  }
+
+  printf("Reverse-----------------------------------------\n");
+
+  push_back_list(l, 3);
+  push_back_list(l, 62);
+  push_back_list(l, 74);
+  push_back_list(l, 8);
+  push_back_list(l, 1102);
+  reverseList(l);
   while(!empty_list(l)){
     printf("%d\n", pop_front_list(l));
   }
