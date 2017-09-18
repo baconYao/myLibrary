@@ -17,10 +17,11 @@ treeNode* FindMin(treeNode *node)
                 return NULL;
         }
         if(node->left) /* Go to the left sub tree to find the min element */
-                return FindMin(node->left);
+               return FindMin(node->left);
         else 
                 return node;
 }
+
 treeNode* FindMax(treeNode *node)
 {
         if(node==NULL)
@@ -29,7 +30,7 @@ treeNode* FindMax(treeNode *node)
                 return NULL;
         }
         if(node->right) /* Go to the left sub tree to find the min element */
-                FindMax(node->right);
+                return FindMax(node->right);
         else 
                 return node;
 }
@@ -42,6 +43,7 @@ treeNode * Insert(treeNode *node,int data)
                 temp = (treeNode *)malloc(sizeof(treeNode));
                 temp -> data = data;
                 temp -> left = temp -> right = NULL;
+                // printf("Add %d\n", temp -> data);
                 return temp;
         }
 
@@ -52,9 +54,12 @@ treeNode * Insert(treeNode *node,int data)
         else if(data < (node->data))
         {
                 node->left = Insert(node->left,data);
+        } else if(data == node->data) {
+          /* Else there is nothing to do as the data is already in the tree. */
+          printf("Already exist %d\n", node->data);
+          return node;
         }
-        /* Else there is nothing to do as the data is already in the tree. */
-        return node;
+      // return node;
 
 }
 
@@ -166,15 +171,28 @@ int main()
         root = Insert(root, 3);
         root = Insert(root, -14);
         root = Insert(root, 8);
+        root = Insert(root, 4);
         root = Insert(root, 10);
         root = Insert(root, 9);
         root = Insert(root, 6);
+        root = Insert(root, 3);
+        root = Insert(root, 7);
+        root = Insert(root, -3);
+        root = Insert(root, -1);
+        root = Insert(root, 6);
+        root = Insert(root, 4);
+        printf("Inorder: ");
         PrintInorder(root);
         printf("\n");
+        printf("Preorder: ");        
+        PrintPreorder(root);
+        printf("\n");
+        printf("Postorder: ");        
         PrintPostorder(root);
         printf("\n");
         root = Delete(root,5);
         root = Delete(root,-1);
+        printf("Inorder: ");
         PrintInorder(root);
         printf("\n");
         treeNode * temp;
@@ -198,6 +216,6 @@ int main()
         }
         else
         {
-                printf("Element 6 Found\n");
+                printf("Element 2 Found\n");
         }
 }
