@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 /* Logic: This is divide and conquer algorithm similar to Merge Sort. Unlike Merge Sort this does not require
           extra space. So it sorts in place. Here the partitioning step involves choosing a pivot and partitioning the array
           such that all elements less than or equal to pivot are to the left of it and all the elements
@@ -49,13 +49,15 @@ void QuickSort(int *array, int from, int to)
 int main()
 {
   int number_of_elements;
-  scanf("Enter the number of the elements: %d",&number_of_elements);
+  printf("Enter the number of the elements: ");
+  scanf("%d",&number_of_elements);
 
   int array[number_of_elements];
   int iter;
   for(iter = 0;iter < number_of_elements;iter++)
   {
-          scanf("%d: %d\n",iter ,&array[iter]);
+    printf("%d: ", iter);
+    scanf("%d", &array[iter]);
   }
   /* Calling this functions sorts the array */
   QuickSort(array,0,number_of_elements-1);
