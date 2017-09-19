@@ -7,6 +7,13 @@
           and right parts.
 */
 
+void swap(int *a, int *b) {
+  int tmp;
+  tmp = *a;
+  *a = *b;
+  *b = tmp;
+}
+
 void QuickSort(int *array, int from, int to)
 {
   if(from>=to)return;
@@ -25,18 +32,21 @@ void QuickSort(int *array, int from, int to)
     if(array[j] < pivot)
     {
       i = i + 1;
-      temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
+      // temp = array[i];
+      // array[i] = array[j];
+      // array[j] = temp;
+      swap(&array[i], &array[j]);
     }
   }
   /* Finally The picture is like shown below
     _______________________i____________________
     |pivot|....<=pivot......|....>=pivot......|
   */
-  temp = array[i];
-  array[i] = array[from];
-  array[from] = temp;
+  swap(&array[i], &array[from]);
+  // temp = array[i];
+  // array[i] = array[from];
+  // array[from] = temp;
+
   /* So we the array is now
     ____________________i______________________
     |...<=pivot......|pivot|....>=pivot......|
