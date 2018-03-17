@@ -60,3 +60,9 @@ void delete_hash_table(unsigned long int deleteValue, int userNumber);
 void display_hash_table(int userNumber);
 /* 紀錄reuse distance並且將data移動到MRU端 */ 
 void record_and_move_data_to_mru(unsigned long int diskBlkno, int userNumber);
+/* 新增data至cache的MRU端 */ 
+void add_new_data_to_cache(unsigned long int diskBlkno, int userNumber);
+/* 列出cache list的內容 */ 
+void display_cache_list(int userNumber);
+/* 打印訊息 */ 
+void show_result();
