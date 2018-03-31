@@ -13,21 +13,21 @@ static long int missCount[NUM_OF_USER] = {0};          //紀錄每個user的miss
 static unsigned long int distanceCounter[NUM_OF_USER][CACHE_SIZE] = {0};      //紀錄reuse distance的counter
 
 /* 定義page的struct */
-typedef struct cache_page {
+typedef struct ghost_cache_page {
   unsigned long int diskBlkno;
-  struct cache_page *prev;
-  struct cache_page *next;
-} cache_page;
+  struct ghost_cache_page *prev;
+  struct ghost_cache_page *next;
+} ghost_cache_page;
 
 /* 定義cache的struct */
-typedef struct cache_list {
+typedef struct ghost_cache_list {
   unsigned long int size;       //cache 目前的大小，和freeCacheSize[NUM_OF_USER]總和 = CACHE_SIZE
-  cache_page *head;
-  cache_page *tail;
-} cache_list;
+  ghost_cache_page *head;
+  ghost_cache_page *tail;
+} ghost_cache_list;
 
 /* 宣告user cache list */
-cache_list cache[NUM_OF_USER];
+ghost_cache_list ghostCache[NUM_OF_USER];
 
 /* 定義hash data的struct */
 typedef struct hash_node {
@@ -47,7 +47,7 @@ typedef struct hash_table {
 hash_table hTable[NUM_OF_USER][HASH_TABLE_SIZE];
 
 /* 初始化cache */
-void initialize_cache();
+void initialize_ghost_cache();
 /* 處理到來的data */
 void handle_coming_req(unsigned long int diskBlkno, int userNumber);
 /* 查詢目標是否在hash table內 */
@@ -60,9 +60,9 @@ void delete_hash_table(unsigned long int deleteValue, int userNumber);
 void display_hash_table(int userNumber);
 /* 紀錄reuse distance並且將data移動到MRU端 */ 
 void record_and_move_data_to_mru(unsigned long int diskBlkno, int userNumber);
-/* 新增data至cache的MRU端 */ 
-void add_new_data_to_cache(unsigned long int diskBlkno, int userNumber);
-/* 列出cache list的內容 */ 
-void display_cache_list(int userNumber);
+/* 新增data至ghost cache的MRU端 */ 
+void add_new_data_to_ghost_cache(unsigned long int diskBlkno, int userNumber);
+/* 列出ghost cache list的內容 */ 
+void display_ghost_cache_list(int userNumber);
 /* 打印訊息 */ 
 void show_result();

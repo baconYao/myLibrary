@@ -148,13 +148,13 @@ void display_hash_table(int userNumber) {
 }
 
 /* 
- * [初始化cache]
+ * [初始化ghost cache]
  */
-void initialize_cache() {
+void initialize_ghost_cache() {
   int i;
   for(i = 0; i < NUM_OF_USER; i++) {
-    cache[i].size = 0;
-    cache[i].head = cache[i].tail = NULL;
+    ghostCache[i].size = 0;
+    ghostCache[i].head = ghostCache[i].tail = NULL;
   }
 }
 
@@ -165,30 +165,30 @@ void initialize_cache() {
  */
 void record_and_move_data_to_mru(unsigned long int diskBlkno, int userNumber) {
   /* data在head, 只記錄reuse distance，不移動data */
-  if(cache[userNumber-1].head->diskBlkno == diskBlkno) {
+  if(ghostCache[userNumber-1].head->diskBlkno == diskBlkno) {
     distanceCounter[userNumber-1][0]++;       //distance 0 counter ++
     return;
   }
   
   /* data在tail */
-  if(cache[userNumber-1].tail->diskBlkno == diskBlkno) {
-    distanceCounter[userNumber-1][cache[userNumber-1].size-1]++;    //紀錄distance counter
+  if(ghostCache[userNumber-1].tail->diskBlkno == diskBlkno) {
+    distanceCounter[userNumber-1][ghostCache[userNumber-1].size-1]++;    //紀錄distance counter
     /* 移動data至MRU端 */
-    cache_page *tmp;
-    tmp = cache[userNumber-1].tail;
-    cache[userNumber-1].tail = cache[userNumber-1].tail->prev;
-    cache[userNumber-1].tail->next = NULL;
-    tmp->next = cache[userNumber-1].head;
+    ghost_cache_page *tmp;
+    tmp = ghostCache[userNumber-1].tail;
+    ghostCache[userNumber-1].tail = ghostCache[userNumber-1].tail->prev;
+    ghostCache[userNumber-1].tail->next = NULL;
+    tmp->next = ghostCache[userNumber-1].head;
     tmp->prev = NULL;
-    cache[userNumber-1].head->prev = tmp;
-    cache[userNumber-1].head = tmp;
+    ghostCache[userNumber-1].head->prev = tmp;
+    ghostCache[userNumber-1].head = tmp;
     return;
   }
 
   /* data在中間 */
   int i = 0;
-  cache_page *tmp;
-  tmp = cache[userNumber-1].head;
+  ghost_cache_page *tmp;
+  tmp = ghostCache[userNumber-1].head;
   while(tmp != NULL) {
     if(tmp->diskBlkno == diskBlkno) {
       distanceCounter[userNumber-1][i]++;         //紀錄distance counter
@@ -196,9 +196,9 @@ void record_and_move_data_to_mru(unsigned long int diskBlkno, int userNumber) {
       tmp->prev->next = tmp->next;
       tmp->next->prev = tmp->prev;
       tmp->prev = NULL;
-      tmp->next = cache[userNumber-1].head;
-      cache[userNumber-1].head->prev = tmp;
-      cache[userNumber-1].head = tmp;
+      tmp->next = ghostCache[userNumber-1].head;
+      ghostCache[userNumber-1].head->prev = tmp;
+      ghostCache[userNumber-1].head = tmp;
       return;
     }
     tmp = tmp->next;
@@ -208,49 +208,49 @@ void record_and_move_data_to_mru(unsigned long int diskBlkno, int userNumber) {
 }
 
 /* 
- * [新增data到cache MRU端，並且update hash table]
+ * [新增data到ghost cache MRU端，並且update hash table]
  * @param {unsigned long int } diskBlkno [要移動到MRU端的data]
  * @param {int } userNumber [user代號]
  */
-void add_new_data_to_cache(unsigned long int diskBlkno, int userNumber) {
+void add_new_data_to_ghost_cache(unsigned long int diskBlkno, int userNumber) {
   /* 檢查cache 有沒有滿 */
-  if(cache[userNumber-1].size == CACHE_SIZE) {        //若cache 滿了
-    /* 先將hash table update(剔除cache tail的diskBlkno data)*/
-    delete_hash_table(cache[userNumber-1].tail->diskBlkno, userNumber);
+  if(ghostCache[userNumber-1].size == CACHE_SIZE) {        //若ghostCache 滿了
+    /* 先將hash table update(剔除ghostCache tail的diskBlkno data)*/
+    delete_hash_table(ghostCache[userNumber-1].tail->diskBlkno, userNumber);
     /* 將hash table update(將diskBlkno data新增至hash table) */
     insert_hash_table(diskBlkno, userNumber);
     /* 再剔除LRU端的data  */
-    cache_page *tmp;
-    tmp = cache[userNumber-1].tail;
-    cache[userNumber-1].tail = cache[userNumber-1].tail->prev;
-    cache[userNumber-1].tail->next = NULL;
+    ghost_cache_page *tmp;
+    tmp = ghostCache[userNumber-1].tail;
+    ghostCache[userNumber-1].tail = ghostCache[userNumber-1].tail->prev;
+    ghostCache[userNumber-1].tail->next = NULL;
     free(tmp);
     /* 再將new data新增進cache head(MRU端)*/
-    cache_page *new = (cache_page*)malloc(sizeof(cache_page));
+    ghost_cache_page *new = (ghost_cache_page*)malloc(sizeof(ghost_cache_page));
     new->diskBlkno = diskBlkno;
     new->prev = NULL;
-    new->next = cache[userNumber-1].head;
-    cache[userNumber-1].head->prev = new;
-    cache[userNumber-1].head = new;
+    new->next = ghostCache[userNumber-1].head;
+    ghostCache[userNumber-1].head->prev = new;
+    ghostCache[userNumber-1].head = new;
   } else {      //若cache沒有滿
     /* 先將hash table update(將diskBlkno data新增至hash table) */
     insert_hash_table(diskBlkno, userNumber);
     /* 若沒有任何data在cache內 */
-    if(cache[userNumber-1].size == 0) {
-      cache_page *new = (cache_page*)malloc(sizeof(cache_page));
+    if(ghostCache[userNumber-1].size == 0) {
+      ghost_cache_page *new = (ghost_cache_page*)malloc(sizeof(ghost_cache_page));
       new->diskBlkno = diskBlkno;
       new->prev = new->next = NULL;
-      cache[userNumber-1].head = cache[userNumber-1].tail = new;
+      ghostCache[userNumber-1].head = ghostCache[userNumber-1].tail = new;
     } else {
-      /* 將new data新增進cache head(MRU端)*/
-      cache_page *new = (cache_page*)malloc(sizeof(cache_page));
+      /* 將new data新增進ghostCache head(MRU端)*/
+      ghost_cache_page *new = (ghost_cache_page*)malloc(sizeof(ghost_cache_page));
       new->diskBlkno = diskBlkno;
       new->prev = NULL;
-      new->next = cache[userNumber-1].head;
-      cache[userNumber-1].head->prev = new;
-      cache[userNumber-1].head = new;
+      new->next = ghostCache[userNumber-1].head;
+      ghostCache[userNumber-1].head->prev = new;
+      ghostCache[userNumber-1].head = new;
     }
-    cache[userNumber-1].size++;
+    ghostCache[userNumber-1].size++;
     
   }
 }
@@ -267,19 +267,19 @@ void handle_coming_req(unsigned long int diskBlkno, int userNumber) {
     record_and_move_data_to_mru(diskBlkno, userNumber);     //紀錄reuse distance並且將data移動到MRU端
   } else {        //資料存不在table，表示也不存在cache
     missCount[userNumber-1]++;
-    add_new_data_to_cache(diskBlkno, userNumber);
+    add_new_data_to_ghost_cache(diskBlkno, userNumber);
   }
 }
 
 /* 
- * [列出cache list的內容]
+ * [列出ghost cache list的內容]
  * @param {int } userNumber [user代號]
  */
-void display_cache_list(int userNumber) {
+void display_ghost_cache_list(int userNumber) {
   int key;
-  cache_page *tmp;
-  tmp = cache[userNumber-1].head;
-  printf("\nUser%d Cache element number:%d\n", userNumber, cache[userNumber-1].size);  
+  ghost_cache_page *tmp;
+  tmp = ghostCache[userNumber-1].head;
+  printf("\nUser%d ghostCache element number:%d\n", userNumber, ghostCache[userNumber-1].size);  
   while(tmp != NULL) {
     printf("%lu -> ", tmp->diskBlkno);
     tmp = tmp->next;
@@ -301,7 +301,7 @@ void show_result() {
 }
 
 int main(int argc, char **argv) {
-  initialize_cache();
+  initialize_ghost_cache();
   int i;
   
   handle_coming_req(1, 1);
@@ -321,7 +321,7 @@ int main(int argc, char **argv) {
   handle_coming_req(40, 1);
   
   display_hash_table(1);
-  display_cache_list(1);
+  display_ghost_cache_list(1);
   show_result();
   return 0;
 }
